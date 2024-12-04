@@ -11,6 +11,7 @@ import Thumb from "../components/Thumb";
 import Spinner from "../components/Spinner";
 import SearchBar from "../components/SearchBar";
 import Button from "../components/Button";
+import Footer from "../components/Footer";
 
 // Hook
 import { useHomeFetch } from "../hooks/useHomeFetch";
@@ -63,6 +64,7 @@ const Home = () => {
             {state.page < state.total_pages && !loading && (
                 <Button text='Load More' callback={() => setIsLoadingMore(true)} />
             )}
+            <Footer />
         </>
     );
 }

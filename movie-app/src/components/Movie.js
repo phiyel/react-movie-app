@@ -11,6 +11,7 @@ import BreadCrumb from "./BreadCrumb";
 import MovieInfo from "./MovieInfo";
 import MovieInfoBar from "./MovieInfoBar";
 import Actor from "./Actor";
+import Footer from "./Footer";
 //hook
 import { useMovieFetch } from "../hooks/useMovieFetch";
 
@@ -32,27 +33,28 @@ const Movies = () => {
 
     return (
         <>
-        <BreadCrumb movieTitle={state.original_title} />
-        <MovieInfo movie={state} />
-        <MovieInfoBar
-            time={state.runtime}
-            budget={state.budget}
-            revenue={state.revenue} />
-        <Grid header='Actors'>
-            {state.actors.map(actor => (
-                <Actor
-                    key={actor.credit_id}
-                    name={actor.name}
-                    character={actor.character}
-                    imageUrl={
-                        actor.profile_path
-                            ? `${IMAGE_BASE_URL}${POSTER_SIZE}${actor.profile_path}`
-                            : NoImage
-                    }
-                    alt={actor.name}
-                />
-            ))}
-        </Grid>
+            <BreadCrumb movieTitle={state.original_title} />
+            <MovieInfo movie={state} />
+            <MovieInfoBar
+                time={state.runtime}
+                budget={state.budget}
+                revenue={state.revenue} />
+            <Grid header='Actors'>
+                {state.actors.map(actor => (
+                    <Actor
+                        key={actor.credit_id}
+                        name={actor.name}
+                        character={actor.character}
+                        imageUrl={
+                            actor.profile_path
+                                ? `${IMAGE_BASE_URL}${POSTER_SIZE}${actor.profile_path}`
+                                : NoImage
+                        }
+                        alt={actor.name}
+                    />
+                ))}
+            </Grid>
+            <Footer />
         </>
         );
     }
