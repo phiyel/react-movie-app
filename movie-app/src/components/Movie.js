@@ -9,12 +9,14 @@ import { POSTER_SIZE, BACKDROP_SIZE, IMAGE_BASE_URL } from "../config";
 import Spinner from "./Spinner";
 import BreadCrumb from "./BreadCrumb";
 import MovieInfo from "./MovieInfo";
-
+import MovieInfoBar from "./MovieInfoBar";
+import Actor from "./Actor";
 //hook
 import { useMovieFetch } from "../hooks/useMovieFetch";
 
 //image
 import NoImage from "../images/no_image.jpg";
+import Grid from "./Grid";
 
 
 const Movies = () => {
@@ -32,6 +34,25 @@ const Movies = () => {
         <>
         <BreadCrumb movieTitle={state.original_title} />
         <MovieInfo movie={state} />
+        <MovieInfoBar
+            time={state.runtime}
+            budget={state.budget}
+            revenue={state.revenue} />
+        <Grid header='Actors'>
+            {state.actors.map(actor => (
+                <Actor
+                    key={actor.credit_id}
+                    name={actor.name}
+                    character={actor.character}
+                    imageUrl={
+                        actor.profile_path
+                            ? `${IMAGE_BASE_URL}${POSTER_SIZE}${actor.profile_path}`
+                            : NoImage
+                    }
+                    alt={actor.name}
+                />
+            ))}
+        </Grid>
         </>
         );
     }
