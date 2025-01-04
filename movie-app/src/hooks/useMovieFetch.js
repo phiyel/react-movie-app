@@ -40,7 +40,6 @@ export const useMovieFetch = movieId => {
         const sessionState = isPersistedState(movieId);
 
         if (sessionState) {
-            console.log('Grabbing from sessionStorage');
             setState(sessionState);
             setLoading(false);
             return;

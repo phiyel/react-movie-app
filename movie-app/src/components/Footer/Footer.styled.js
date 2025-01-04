@@ -16,4 +16,8 @@ export const Content = styled.div`
     max-width: var(--maxWidth);
     padding: 0 20px;
     margin: 0 auto;
+
+    h2 {
+        margin: 0 auto;
+    }
 `;

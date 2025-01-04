@@ -5,13 +5,6 @@ import {
   API_KEY
 } from './config';
 
-const defaultConfig = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-};
-
 const apiSettings = {
   fetchMovies: async (searchTerm, page) => {
     const endpoint = searchTerm

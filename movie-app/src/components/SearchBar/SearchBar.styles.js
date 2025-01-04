@@ -46,6 +46,15 @@ export const Content = styled.div`
             outline: none;
         }
 
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus,
+        &:-webkit-autofill:active{
+            -webkit-text-fill-color: var(--white);
+            -webkit-box-shadow: 0 0 0px 1000px var(--medGrey) inset;
+            left: 4%;
+        }
+
         @media screen and (max-width: 768px) {
             font-size: var(--fontMed);
         }
