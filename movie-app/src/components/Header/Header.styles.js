@@ -9,7 +9,6 @@ export const Content = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    // flex-grow: 1;
     max-width: var(--maxWidth);
     padding: 20px 0;
     margin: 0 auto;
@@ -18,9 +17,6 @@ export const Content = styled.div`
         color: var(--white);
         text-decoration: none;
 
-        /* .login{
-            float: right;
-        } */
     }
 `;
 
@@ -36,6 +32,7 @@ export const TMDBLogoImg = styled.img`
     width: 100px;
     @media screen and (max-width: 500px) {
         width: 80px;
+        display: none;
     }
 `;
 
@@ -44,6 +41,7 @@ export const Login = styled.div`
     display: flex;
     align-items: center;
 
+
     .login,
     .loggedOut {
         margin: 0 20px;
@@ -51,11 +49,22 @@ export const Login = styled.div`
         
     }
 
-    .logged-in-text {
-        display: none;
+    a:first-child {
+        border-right: 1px solid var(--white);
+    }
 
+    .logged-in-text {
         @media screen and (min-width: 600px) {
             display: block;
+            margin-bottom: 8px;
+        }
+       
+    }
+    .loggedOut {
+        @media screen and (max-width: 600px) {
+            text-align: right;
+
+            button {margin-top: 10px;}
         }
     }
 `;

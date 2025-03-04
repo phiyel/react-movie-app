@@ -7,14 +7,14 @@ import Button from "./Button";
 //Styles
 import { Wrapper } from "./Login.styles";
 //Context
-import { Context } from "../context";
+import { UserContext } from "../context/UserProvider";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
 
-    const [_user, setUser] = useContext(Context);
+    const [, setUser] = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleInput = (e) => {
@@ -39,10 +39,10 @@ const Login = () => {
                 username,
                 password
             );
-            //console.log(sessionId);
+            
             setUser({ sessionId: sessionId.session_id, username });
-
             navigate('/');
+
         } catch (error) {
             setError(true);
         }

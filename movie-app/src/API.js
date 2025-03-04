@@ -44,14 +44,14 @@ const apiSettings = {
       password,
       request_token: requestToken
     };
-    // First authenticate the requestToken
+// First authenticate the requestToken
     const data = await (
       await fetch(LOGIN_URL, {
         ...defaultConfig,
         body: JSON.stringify(bodyData)
       })
     ).json();
-    // Then get the sessionId with the requestToken
+// Then get the sessionId with the requestToken
     if (data.success) {
       const sessionId = await (
         await fetch(SESSION_ID_URL, {
@@ -70,15 +70,14 @@ const apiSettings = {
         ...defaultConfig,
         body: JSON.stringify({ value })
       })
-      ).json();
-
-      return rating;
-    },
-    //session id for guest users
-    createGuestSession: async () => {
-      const endpoint = `${GUEST_SESSION_URL}`;
-      return await (await fetch(endpoint)).json();
-    }
-  };
+    ).json();
+    return rating;
+  },
+//session id for guest users
+  createGuestSession: async () => {
+    const endpoint = `${GUEST_SESSION_URL}`;
+    return await (await fetch(endpoint)).json();
+  }
+};
 
 export default apiSettings;

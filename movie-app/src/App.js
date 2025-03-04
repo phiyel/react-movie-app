@@ -1,4 +1,3 @@
-
 import React from 'react';
 //Routing 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -11,25 +10,24 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 
 //context
-import UserProvider from './context';
-
+import UserProvider from './context/UserProvider'; 
 //styles
 import { GlobalStyle } from './GlobalStyle';
 
 const App = () => (
   <Router>  
     <UserProvider>
-    <Header />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/:movieId" element={<Movie />} />
-      <Route path="/*" element={<NotFound />} />
-    </Routes>
-    <GlobalStyle />
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/:movieId" element={<Movie />} />
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
+      <GlobalStyle />
     </UserProvider>
   </Router>
-  );
+);
 
 export default App;
