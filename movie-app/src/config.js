@@ -16,6 +16,8 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 const BACKDROP_SIZE = 'w1280';
 // w92, w154, w185, w342, w500, w780, original
 const POSTER_SIZE = 'w780';
+//Guest session URL
+const GUEST_SESSION_URL = `${API_URL}authentication/guest_session/new?api_key=${API_KEY}`;
 
 export {
   SEARCH_BASE_URL,
@@ -27,5 +29,6 @@ export {
   POSTER_SIZE,
   REQUEST_TOKEN_URL,
   LOGIN_URL,
-  SESSION_ID_URL
+  SESSION_ID_URL,
+  GUEST_SESSION_URL
 };

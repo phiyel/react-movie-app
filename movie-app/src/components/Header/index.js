@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";    
-import RMDBLogo from "../../images/react-movie-logo.svg";
+import { Link, useNavigate } from "react-router-dom";    
 
+import RMDBLogo from "../../images/react-movie-logo.svg";
 import TMDBLogo from "../../images/tmdb_logo.svg";
 
 import { Wrapper, Content, LogoImg, TMDBLogoImg, Login } from "../Header/Header.styles";
@@ -10,7 +10,14 @@ import { Wrapper, Content, LogoImg, TMDBLogoImg, Login } from "../Header/Header.
 import { Context } from "../../context";
 
 const Header = () => {
-    const [user] = useContext(Context);
+    const [user, setUser] = useContext(Context);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("guest_session_id");
+        setUser(null);
+        navigate("/");
+    };
  
     return (
     <Wrapper>
@@ -20,11 +27,18 @@ const Header = () => {
         </Link>
         <Login>
             {user ? (
-                <div className="loggedOut"><span className="logged-in-text">Logged in as:</span> {user.username}</div>
+                <div className="loggedOut"><span className="logged-in-text">Logged in as:</span> {user.username}
+                <span onClick={handleLogout}>Sign Out</span>
+                </div>
             ) : (
-                <Link to="/login">
-                <div className="login">Log in</div>
-                </Link>
+                <>
+                    <Link to="/login">
+                        <div className="login">Log in</div>
+                    </Link>
+                    <Link to="/signup">
+                        <div className="login">Sign Up</div>
+                    </Link>
+                </>
             )}
             <TMDBLogoImg src={TMDBLogo} alt="tmdb-logo" />
         </Login>

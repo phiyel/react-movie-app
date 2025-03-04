@@ -5,7 +5,8 @@ import {
   API_KEY,
   REQUEST_TOKEN_URL,
   LOGIN_URL,
-  SESSION_ID_URL
+  SESSION_ID_URL,
+  GUEST_SESSION_URL
 } from './config';
 
 const defaultConfig = {
@@ -72,6 +73,11 @@ const apiSettings = {
       ).json();
 
       return rating;
+    },
+    //session id for guest users
+    createGuestSession: async () => {
+      const endpoint = `${GUEST_SESSION_URL}`;
+      return await (await fetch(endpoint)).json();
     }
   };
 
