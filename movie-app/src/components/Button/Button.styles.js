@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Wrapper = styled.button`
     display: block;
     background: var(--darkGrey);
-    width: 25%;
+    width: 250px;
     min-width: 200px;
     height: 60px;
     margin: 45px auto;
@@ -23,9 +23,4 @@ export const Wrapper = styled.button`
         outline: none;
     }
 
-    @media screen and (max-width: 768px) {
-        width: 70%;
-    }
-
-    
 `;
