@@ -13,7 +13,7 @@ const defaultConfig = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
 };
 
 const apiSettings = {
@@ -77,7 +77,12 @@ const apiSettings = {
   createGuestSession: async () => {
     const endpoint = `${GUEST_SESSION_URL}`;
     return await (await fetch(endpoint)).json();
+  },
+//Fetch movie videos
+  fetchMovieVideos: async (movieId) => {
+    const endpoint = `${API_URL}movie/${movieId}/videos?api_key=${API_KEY}`;
+    return await (await fetch(endpoint)).json();
   }
-};
+}; 
 
 export default apiSettings;

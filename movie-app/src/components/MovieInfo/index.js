@@ -6,9 +6,22 @@ import { Wrapper, Content, Text } from "./MovieInfo.styles";
 import Thumb from "../Thumb";
 import Rate from "../Rate";
 import { UserContext } from "../../context/UserProvider";
+//import API from "../../API";
 
 const MovieInfo = ({ movie }) => {
     const [user] = useContext(UserContext);
+   // const [videos, setVideos] = useState([]);
+
+    // useEffect(() => {
+    //     const fetchVideos = async () => {
+    //         const videoData = await API.fetchMovieVideos(movie.id);
+    //         console.log("Video Data:", videoData); // Log the video data
+    //         setVideos(videoData.results);
+    //     };
+
+    //     fetchVideos();
+    // }, [movie.id]);
+
 
     return (
         <Wrapper $backdrop={movie.backdrop_path}>
@@ -43,6 +56,24 @@ const MovieInfo = ({ movie }) => {
                             <Rate movieId={movie.id} />
                         </div>
                     )}
+                    {/* {user && videos.length > 0 && (
+                        <div>
+                            <h3>VIDEO</h3>
+                            <div key={videos[2].id}>
+                                <p>{videos[2].name}</p>
+                                <iframe
+                                    width="560"
+                                    height="315"
+                                    src={`https://www.youtube.com/embed/${videos[2].key}`}
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={videos[2].name}
+                                    sandbox="allow-scripts allow-same-origin allow-presentation"
+                                ></iframe>
+                            </div>
+                        </div>
+                    )} */}
                 </Text>
             </Content>
         </Wrapper>
