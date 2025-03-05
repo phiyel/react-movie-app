@@ -34,6 +34,7 @@ const SignUp = () => {
             }
 
             setUser({ guestSessionId: guestSession.guest_session_id, username });
+            //console.log("Guest Session ID set:", guestSession.guest_session_id); //
             navigate("/");
         } catch (error) {
             setError(true);

@@ -11,7 +11,6 @@ import BreadCrumb from "./BreadCrumb";
 import MovieInfo from "./MovieInfo";
 import MovieInfoBar from "./MovieInfoBar";
 import Actor from "./Actor";
-import Footer from "./Footer";
 //hook
 import { useMovieFetch } from "../hooks/useMovieFetch";
 
@@ -26,7 +25,6 @@ const Movies = () => {
     if (loading) return <Spinner />;
 
     if (error) return <div>Something went wrong...</div>;
-
 
     return (
         <>
@@ -51,7 +49,6 @@ const Movies = () => {
                     />
                 ))}
             </Grid>
-            <Footer />
         </>
         );
     }

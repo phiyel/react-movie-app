@@ -40,9 +40,13 @@ const Login = () => {
                 password
             );
             
-            setUser({ sessionId: sessionId.session_id, username });
-            navigate('/');
-
+            if (sessionId) {
+                setUser({ sessionId: sessionId.session_id, username });
+                localStorage.setItem("session_id", sessionId.session_id);
+                navigate('/');
+            } else {
+                setError(true);
+            }
         } catch (error) {
             setError(true);
         }
@@ -50,7 +54,7 @@ const Login = () => {
 
     return (
         <Wrapper>
-            {error && <div className="error">There was an error! please check userame and password.</div>}
+            {error && <div className="error">There was an error! please check username and password.</div>}
             <label>Username:</label>
             <input
                 type="text"
