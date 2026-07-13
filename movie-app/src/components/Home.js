@@ -20,7 +20,8 @@ const Home = () => {
 
     const { state, loading, error, searchTerm, setSearchTerm, setIsLoadingMore } = useHomeFetch();
     
-    if (loading && state.page === 1) return ( <Spinner /> );
+    // Show full-page spinner only for the initial/search load, not load-more.
+    if (loading && !state.results.length) return ( <Spinner /> );
 
     if (error) return (
         <div style={{ textAlign: 'center', padding: '60px 0'}}>
