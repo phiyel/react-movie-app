@@ -22,7 +22,12 @@ const Home = () => {
     
     if (loading && state.page === 1) return ( <Spinner /> );
 
-    if (error) return <div>Something went wrong...</div>;
+    if (error) return (
+        <div style={{ textAlign: 'center', padding: '60px 0'}}>
+            <Spinner />
+            <p style={{ fontSize: '2rem', padding: '20px 0', color: '#ff6b6b' }}>Something went wrong...</p>
+        </div>
+    );
 
     // Filter out duplicate movies
   const uniqueMovies = state.results.filter((movie, index, self) =>

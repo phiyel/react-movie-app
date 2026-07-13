@@ -22,6 +22,8 @@ export const useHomeFetch = () => {
 
             const movies = await API.fetchMovies(searchTerm, page);
 
+            if (!movies.results) throw new Error(movies.status_message || 'Invalid API response');
+
             setState(prev => ({
                 ...movies,
                 results:
