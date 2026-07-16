@@ -14,6 +14,8 @@ const Header = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("guest_session_id");
+        localStorage.removeItem("guest_session");
+        localStorage.removeItem("session_id");
         setUser(null);
     };
 

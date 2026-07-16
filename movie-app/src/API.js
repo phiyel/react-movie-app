@@ -8,6 +8,7 @@ import {
   SESSION_ID_URL,
   GUEST_SESSION_URL
 } from './config';
+import { supabase } from './utils/supabase';
 
 const defaultConfig = {
   method: 'POST',
@@ -62,8 +63,9 @@ const apiSettings = {
       return sessionId;
     }
   },
-  rateMovie: async (sessionId, movieId, value) => {
-    const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`;
+  rateMovie: async (sessionId, movieId, value, isGuest = false) => {
+    const authParam = isGuest ? 'guest_session_id' : 'session_id';
+    const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&${authParam}=${sessionId}`;
 
     const rating = await (
       await fetch(endpoint, {
@@ -82,6 +84,22 @@ const apiSettings = {
   fetchMovieVideos: async (movieId) => {
     const endpoint = `${API_URL}movie/${movieId}/videos?api_key=${API_KEY}`;
     return await (await fetch(endpoint)).json();
+  },
+  saveSignup: async ({ username, email, tmdbGuestSessionId }) => {
+    const { error } = await supabase
+      .from('users')
+      .upsert([
+        {
+          username,
+          email,
+          tmdb_guest_session_id: tmdbGuestSessionId,
+          updated_at: new Date().toISOString()
+        }
+      ], { onConflict: 'email' });
+
+    if (error) throw error;
+
+    return { success: true };
   }
 }; 
 

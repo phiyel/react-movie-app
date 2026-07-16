@@ -9,11 +9,19 @@ const Rate = ({ movieId }) => {
     const [user] = useContext(UserContext);
 
     const handleRate = async () => {
-        const sessionId = user?.sessionId || user?.guestSessionId || localStorage.getItem("session_id") || localStorage.getItem("guest_session_id");
-       // console.log("Session ID:", sessionId); 
+        const storedGuestSession = JSON.parse(localStorage.getItem("guest_session") || "null");
+        const isGuestSessionExpired = storedGuestSession?.expires_at
+            ? new Date(storedGuestSession.expires_at) < new Date()
+            : false;
+
+        const authSessionId = user?.sessionId || localStorage.getItem("session_id");
+        const guestSessionId = user?.guestSessionId || (isGuestSessionExpired ? null : storedGuestSession?.guest_session_id);
+        const sessionId = authSessionId || guestSessionId;
+        const isGuest = !authSessionId && !!guestSessionId;
+
         if (sessionId) {
             try {
-                const response = await API.rateMovie(sessionId, movieId, value);
+                const response = await API.rateMovie(sessionId, movieId, Number(value), isGuest);
                 if (response.success) {
                     setMessage("Movie rated successfully!");
                 } else {
@@ -22,6 +30,8 @@ const Rate = ({ movieId }) => {
             } catch (error) {
                 setMessage("An error occurred while rating the movie. Please try again.");
             }
+        } else if (isGuestSessionExpired) {
+            setMessage("Your guest session expired. Please sign up as guest again.");
         } else {
             setMessage("You need to be logged in to rate a movie.");
         }

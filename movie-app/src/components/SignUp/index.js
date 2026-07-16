@@ -7,17 +7,47 @@ import { UserContext } from "../../context/UserProvider";
 
 const SignUp = () => {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [usernameError, setUsernameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
     const navigate = useNavigate();
     const [, setUser] = useContext(UserContext);
 
+    const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+    const handleUsernameChange = (event) => {
+        const value = event.currentTarget.value;
+        setUsername(value);
+
+        if (value.trim()) {
+            setUsernameError(false);
+        }
+    };
+
+    const handleEmailChange = (event) => {
+        const value = event.currentTarget.value;
+        setEmail(value);
+
+        if (value.trim() && isValidEmail(value.trim())) {
+            setEmailError(false);
+        }
+    };
+
     const handleSignUp = async () => {
         setError(false);
-        setUsernameError(false);
+        // Reset error messages - remove later
+        setErrorMessage("");
+        const trimmedUsername = username.trim();
+        const trimmedEmail = email.trim();
+        const hasUsernameError = !trimmedUsername;
+        const hasEmailError = !trimmedEmail || !isValidEmail(trimmedEmail);
 
-        if (!username) {
-            setUsernameError(true);
+        setUsernameError(hasUsernameError);
+        setEmailError(hasEmailError);
+
+        if (hasUsernameError || hasEmailError) {
             return;
         }
 
@@ -29,28 +59,43 @@ const SignUp = () => {
                     localStorage.setItem("guest_session", JSON.stringify(guestSession));
                 } else {
                     setError(true);
+                    setErrorMessage("Could not create TMDB guest session. Please try again.");
                     return;
                 }
             }
 
-            setUser({ guestSessionId: guestSession.guest_session_id, username });
+            await API.saveSignup({
+                username: trimmedUsername,
+                email: trimmedEmail,
+                tmdbGuestSessionId: guestSession.guest_session_id
+            });
+
+            setUser({ guestSessionId: guestSession.guest_session_id, username: trimmedUsername, email: trimmedEmail });
             //console.log("Guest Session ID set:", guestSession.guest_session_id); //
             navigate("/");
         } catch (error) {
             setError(true);
+            setErrorMessage(error?.message || "There was an error! Please try again.");
         }
     };
 
     return (
         <Wrapper>
-            {error && <div className="error">There was an error! Please try again.</div>}
+            {error && <div className="error">{errorMessage || "There was an error! Please try again."}</div>}
             <label>Username:</label>
             <input
                 type="text"
                 value={username}
-                onChange={(event) => setUsername(event.currentTarget.value)}
+                onChange={handleUsernameChange}
             />
             {usernameError && <div className="error">Username is required!</div>}
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+            />
+            {emailError && <div className="error">Please enter a valid email address!</div>}
             <Button text="Sign Up as Guest" callback={handleSignUp} />
         </Wrapper>
     );
