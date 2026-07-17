@@ -54,16 +54,27 @@ const Login = () => {
 
     return (
         <Wrapper>
+            <p>A TMDB account is required to sign in. Please authenticate with your TMDB credentials to continue. <br />Don't have a TMDB account?{" "}
+  <a
+    href="https://www.themoviedb.org/signup"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Create one
+  </a> 
+</p>
             {error && <div className="error">There was an error! please check username and password.</div>}
-            <label>Username:</label>
+            <label htmlFor="username">Username:</label>
             <input
+                id="username"
                 type="text"
                 value={username}
                 name="username"
                 onChange={handleInput}
             />
-            <label>Password:</label>
+            <label htmlFor="password">Password:</label>
             <input
+                id="password"
                 type="password"
                 value={password}
                 name="password"

@@ -16,10 +16,14 @@ export const Wrapper = styled.div`
         
     }
 
-    label {
+    label, p {
         align-self: start;
         margin-top: 20px;
         font-size: var(--fontMed);
+    }
+
+    p {
+        color: var(--darkGrey);
     }
     
     input {

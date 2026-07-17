@@ -82,15 +82,17 @@ const SignUp = () => {
     return (
         <Wrapper>
             {error && <div className="error">{errorMessage || "There was an error! Please try again."}</div>}
-            <label>Username:</label>
+            <label htmlFor="signup-username">Username:</label>
             <input
+                id="signup-username"
                 type="text"
                 value={username}
                 onChange={handleUsernameChange}
             />
             {usernameError && <div className="error">Username is required!</div>}
-            <label>Email:</label>
+            <label htmlFor="signup-email">Email:</label>
             <input
+                id="signup-email"
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
