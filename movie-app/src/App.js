@@ -16,7 +16,7 @@ import { GlobalStyle } from './GlobalStyle';
 
 const App = () => {
   return (
-    <Router>  
+    <Router basename={process.env.PUBLIC_URL}>  
       <UserProvider>
         <Layout>
           <Routes>

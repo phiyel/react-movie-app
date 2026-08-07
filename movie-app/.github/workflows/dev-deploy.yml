@@ -1,0 +1,118 @@
+name: Build and Deploy React Movie to cPanel
+
+on:
+  push:
+    branches:
+      - dev
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react-movie-development
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    environment:
+      name: development
+      url: https://dev.rbonney.me/movie-app/
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint --if-present
+
+      - name: Build application
+        env:
+          REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
+          REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
+          REACT_APP_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.REACT_APP_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+
+          if [ ! -d "./build" ]; then
+            echo "::error::The ./build directory was not created."
+            echo "::error::Check your framework's output directory."
+            exit 1
+          fi
+
+          if [ ! -f "./build/index.html" ]; then
+            echo "::error::The build directory does not contain index.html."
+            exit 1
+          fi
+
+          echo "Build output verified successfully."
+          find ./build -maxdepth 2 -type f | sort | head -50
+
+      - name: Normalize FTP host
+        id: ftp_host
+        env:
+          RAW_FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${RAW_FTP_SERVER}" ]; then
+            echo "::error::FTP_SERVER secret is missing or empty."
+            exit 1
+          fi
+
+          HOST="${RAW_FTP_SERVER#ftp://}"
+          HOST="${HOST#ftps://}"
+          HOST="${HOST#sftp://}"
+          HOST="${HOST%%/*}"
+          HOST="${HOST%%:*}"
+          HOST="$(echo "${HOST}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+          if [ -z "${HOST}" ]; then
+            echo "::error::FTP_SERVER must be a hostname like ftp.example.com (no protocol/path)."
+            exit 1
+          fi
+
+          echo "host=${HOST}" >> "$GITHUB_OUTPUT"
+
+      - name: FTP DNS check
+        env:
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          echo "Resolving FTP host..."
+
+          if ! getent ahostsv4 "${FTP_HOST}" >/dev/null; then
+            echo "::error::Could not resolve the FTP host."
+            exit 1
+          fi
+
+          echo "FTP host resolved successfully."
+
+      - name: Deploy build to development cPanel directory
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          # This action supports ftp and ftps only (not sftp).
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          port: ${{ vars.FTP_PORT || 21 }}
+          local-dir: ./build/
+          server-dir: ${{ vars.FTP_SERVER_DIR || './movie-app/' }}
