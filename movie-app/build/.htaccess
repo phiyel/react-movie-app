@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /movie-app/
+
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /movie-app/index.html [L]
