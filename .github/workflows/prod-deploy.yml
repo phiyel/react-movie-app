@@ -34,6 +34,10 @@ jobs:
         run: npm run lint --if-present
 
       - name: Run tests
+        env:
+          REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
+          REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
+          REACT_APP_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.REACT_APP_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run test --if-present -- --ci --watchAll=false
         continue-on-error: false
 
