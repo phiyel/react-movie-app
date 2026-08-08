@@ -101,4 +101,7 @@ jobs:
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           port: ${{ vars.FTP_PORT || 21 }}
           local-dir: ./build/
-          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
+          # Default to current FTP root so deploys do not create movie-app/movie-app.
+          server-dir: ${{ vars.PROD_FTP_SERVER_DIR || './' }}
+          # Remove old files first so stale hashed assets do not remain after deploy.
+          dangerous-clean-slate: true
