@@ -1,6 +1,7 @@
 {
   "name": "movie-app",
   "version": "0.1.0",
+  "homepage": "/movie-app",
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",
