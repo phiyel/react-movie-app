@@ -75,25 +75,47 @@ jobs:
           echo "host=${HOST}" >> "$GITHUB_OUTPUT"
 
       - name: FTP preflight check (DNS and port)
+        id: ftp_preflight
         env:
           FTP_HOST: ${{ steps.ftp_host.outputs.host }}
+          FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           FTP_PORT: ${{ vars.FTP_PORT || '21' }}
         run: |
           set -euo pipefail
 
-          echo "Resolving ${FTP_HOST}..."
-          if ! getent hosts "${FTP_HOST}" >/dev/null; then
+          echo "Resolving IPv4 for ${FTP_HOST}..."
+          FTP_IPV4="$(getent ahostsv4 "${FTP_HOST}" | awk 'NR==1{print $1}')"
+          if [ -z "${FTP_IPV4}" ]; then
             echo "::error::Could not resolve FTP host '${FTP_HOST}'. Check FTP_SERVER secret value."
             echo "::error::Use only a hostname (e.g. ftp.example.com), not ftp://, ftps://, sftp://, or a full URL."
             exit 1
           fi
 
-          echo "Checking TCP connectivity to ${FTP_HOST}:${FTP_PORT}..."
-          if ! nc -z -w 10 "${FTP_HOST}" "${FTP_PORT}"; then
-            echo "::error::Could not connect to ${FTP_HOST}:${FTP_PORT} from GitHub runner."
+          echo "Resolved ${FTP_HOST} to ${FTP_IPV4}."
+
+          # Try configured port first, then common FTPS fallback (990) if needed.
+          CANDIDATE_PORTS="${FTP_PORT}"
+          if [ "${FTP_PROTOCOL}" = "ftps" ] && [ "${FTP_PORT}" != "990" ]; then
+            CANDIDATE_PORTS="${CANDIDATE_PORTS} 990"
+          fi
+
+          SELECTED_PORT=""
+          for PORT in ${CANDIDATE_PORTS}; do
+            echo "Checking TCP connectivity to ${FTP_IPV4}:${PORT}..."
+            if nc -z -w 10 "${FTP_IPV4}" "${PORT}"; then
+              SELECTED_PORT="${PORT}"
+              break
+            fi
+          done
+
+          if [ -z "${SELECTED_PORT}" ]; then
+            echo "::error::Could not connect to ${FTP_HOST} (${FTP_IPV4}) on ports: ${CANDIDATE_PORTS}."
             echo "::error::Verify FTP protocol/port, firewall, and any IP allowlist at your hosting provider."
             exit 1
           fi
+
+          echo "Using FTP port ${SELECTED_PORT}."
+          echo "deploy_port=${SELECTED_PORT}" >> "$GITHUB_OUTPUT"
 
       - name: Deploy build to cPanel
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -103,7 +125,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
-          port: ${{ vars.FTP_PORT || 21 }}
+          port: ${{ steps.ftp_preflight.outputs.deploy_port }}
           local-dir: ./build/
           # Default to current FTP root so deploys do not create movie-app/movie-app.
           server-dir: ${{ vars.PROD_FTP_SERVER_DIR || './' }}
