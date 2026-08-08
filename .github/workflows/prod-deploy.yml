@@ -34,7 +34,7 @@ jobs:
         run: npm run lint --if-present
 
       - name: Run tests
-        run: npm run test --if-present -- --run
+        run: npm run test --if-present -- --ci --watchAll=false
         continue-on-error: false
 
       - name: Build application
