@@ -65,7 +65,7 @@ const Home = () => {
                 <Button
                     text='Load More'
                     callback={() => setIsLoadingMore(true)}
-                    gtmEvent='load_more_click'
+                    gtmEvent='load_more'
                     gtmPayload={{
                         source: searchTerm ? 'search_results' : 'popular_movies',
                         current_page: state.page
