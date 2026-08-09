@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { IMAGE_BASE_URL, POSTER_SIZE } from "../../config";
 import NoImage from "../../images/no_image.jpg";
@@ -10,7 +10,25 @@ import { UserContext } from "../../context/UserProvider";
 
 const MovieInfo = ({ movie }) => {
     const [user] = useContext(UserContext);
+    const lastTrackedMovieIdRef = useRef(null);
    // const [videos, setVideos] = useState([]);
+
+    useEffect(() => {
+        if (typeof window === "undefined" || !movie?.id) return;
+        if (lastTrackedMovieIdRef.current === movie.id) return;
+
+        lastTrackedMovieIdRef.current = movie.id;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            category: "movie details",
+            action: "view",
+            raw_path: window.location.pathname,
+            page_path: window.location.pathname,
+            page_title: movie.title,
+            movie_id: movie.id,
+            movie_title: movie.title
+        });
+    }, [movie?.id, movie?.title]);
 
     // useEffect(() => {
     //     const fetchVideos = async () => {

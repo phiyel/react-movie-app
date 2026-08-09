@@ -18,11 +18,11 @@ const Layout = ({ children }) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'pageview',
-      raw_path: location.pathname,
-      page_path: location.pathname,
-      page_title: document.title,
-      page_location: window.location.href,
-      page_search: location.search || ''
+      rawPath: window.location.pathname,
+      pagePath: window.location.pathname,
+      pageTitle: document.title,
+      pageLocation: window.location.href,
+      pageSearch: location.search || ''
     });
   }, [location.pathname, location.search]);
 
