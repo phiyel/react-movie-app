@@ -62,7 +62,15 @@ const Home = () => {
                 </Grid>
                 {loading && <Spinner />}
                 {state.page < state.total_pages && !loading && (
-                <Button text='Load More' callback={() => setIsLoadingMore(true)} />
+                <Button
+                    text='Load More'
+                    callback={() => setIsLoadingMore(true)}
+                    gtmEvent='load_more_click'
+                    gtmPayload={{
+                        source: searchTerm ? 'search_results' : 'popular_movies',
+                        current_page: state.page
+                    }}
+                />
                 )}
                 
             </>
