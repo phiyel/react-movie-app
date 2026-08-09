@@ -22,11 +22,11 @@ const MovieInfo = ({ movie }) => {
         window.dataLayer.push({
             category: "movie details",
             action: "view",
-            raw_path: window.location.pathname,
-            page_path: window.location.pathname,
-            page_title: movie.title,
-            movie_id: movie.id,
-            movie_title: movie.title
+            rawPath: window.location.pathname,
+            pagePath: window.location.pathname,
+            pageTitle: movie.title,
+            movieId: movie.id,
+            movieTitle: movie.title
         });
     }, [movie?.id, movie?.title]);
 
