@@ -9,7 +9,7 @@ const Actor = ({ name, character, imageUrl }) => (
         className="actor-image" 
         src={imageUrl} 
         alt={name} 
-        clickable={true}
+        clickable={false}
         />
         <h3>{name}</h3>
         <p>{character}</p>
