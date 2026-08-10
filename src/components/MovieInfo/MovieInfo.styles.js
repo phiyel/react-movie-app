@@ -43,6 +43,7 @@ export const Text = styled.div`
     .rating-directors {
         display: flex;
         justify-content: flex-start;
+        margin-bottom: 25px;
     }
 
     .score {
@@ -64,6 +65,26 @@ export const Text = styled.div`
         p {
             margin: 0;
         }
+    }
+
+    .rate-movie {
+        margin-bottom: 25px;
+    }
+
+    .video-section {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+    }
+    .video-section iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
     }
 
     h1, h3, p {
