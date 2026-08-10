@@ -9,14 +9,26 @@ class SearchBar extends Component {
     state = { value: '' };
     timeout = null;
 
+    componentWillUnmount() {
+        if (this.timeout) clearTimeout(this.timeout);
+    }
+
     // use of lifecycle method
     componentDidUpdate(_prevProps, prevState) {
         if(this.state.value !== prevState.value){
             const { setSearchTerm } = this.props;
 
+            if (this.timeout) clearTimeout(this.timeout);
+
             this.timeout = setTimeout(() => {
                 const { value } = this.state;
                 setSearchTerm(value);
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    event: 'search movie',
+                    action: 'search',
+                    searchTerm: value
+                });
             }, 500);
         }
     }
@@ -27,7 +39,7 @@ class SearchBar extends Component {
      
     render(){
 
-        const { state } = this.state;
+        const { value } = this.state;
 
         return (
             <Wrapper>
@@ -39,7 +51,7 @@ class SearchBar extends Component {
                         name="search"
                         placeholder='Search Movie'
                         onChange={this.handleChange}
-                        value={state}
+                        value={value}
                     />
                 </Content>
             </Wrapper>

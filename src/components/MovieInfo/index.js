@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { IMAGE_BASE_URL, POSTER_SIZE } from "../../config";
 import NoImage from "../../images/no_image.jpg";
@@ -6,21 +6,52 @@ import { Wrapper, Content, Text } from "./MovieInfo.styles";
 import Thumb from "../Thumb";
 import Rate from "../Rate";
 import { UserContext } from "../../context/UserProvider";
-//import API from "../../API";
+import API from "../../API";
+
+const getLanguageName = (languageCode) => {
+    if (!languageCode) return "Unknown";
+
+    try {
+        const normalizedCode = String(languageCode).toLowerCase();
+        const displayNames = new Intl.DisplayNames(["en"], { type: "language" });
+        return displayNames.of(normalizedCode) || normalizedCode.toUpperCase();
+    } catch (_error) {
+        return String(languageCode).toUpperCase();
+    }
+};
 
 const MovieInfo = ({ movie }) => {
     const [user] = useContext(UserContext);
-   // const [videos, setVideos] = useState([]);
+    const lastTrackedMovieIdRef = useRef(null);
+    const [videos, setVideos] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchVideos = async () => {
-    //         const videoData = await API.fetchMovieVideos(movie.id);
-    //         console.log("Video Data:", videoData); // Log the video data
-    //         setVideos(videoData.results);
-    //     };
+    useEffect(() => {
+        if (typeof window === "undefined" || !movie?.id) return;
+        if (lastTrackedMovieIdRef.current === movie.id) return;
 
-    //     fetchVideos();
-    // }, [movie.id]);
+        lastTrackedMovieIdRef.current = movie.id;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            category: "movie_selected",
+            action: "click",
+            rawPath: window.location.pathname,
+            pagePath: window.location.pathname,
+            pageTitle: movie.title,
+            movieId: movie.id,
+            movieTitle: movie.title
+        });
+    }, [movie?.id, movie?.title]);
+
+    useEffect(() => {
+        const fetchVideos = async () => {
+            const videoData = await API.fetchMovieVideos(movie.id);
+            setVideos(videoData?.results || []);
+        };
+
+        fetchVideos();
+    }, [movie.id]);
+
+    const selectedVideo = videos[2] || videos[0] || null;
 
 
     return (
@@ -38,6 +69,19 @@ const MovieInfo = ({ movie }) => {
                     <h1>{movie.title}</h1>
                     <h3>PLOT</h3>
                     <p>{movie.overview}</p>
+                    {user && (
+                        <div>
+                            
+                            <h3>ORIGIN COUNTRY</h3>
+                            <p>{movie.origin_country}</p>
+                            <h3>ORIGINAL LANGUAGE</h3>
+                            <p>{getLanguageName(movie.original_language)}</p>
+                            <h3>RELEASE DATE</h3>
+                            <p>{movie.release_date}</p>
+                            <h3>GENRE</h3>
+                            <p>{movie.genres.map(genre => genre.name).join(", ")}</p>
+                        </div>
+                    )}
                     <div className="rating-directors">
                         <div>
                             <h3>RATING</h3>
@@ -51,29 +95,30 @@ const MovieInfo = ({ movie }) => {
                         </div>
                     </div>
                     {user && (
-                        <div>
+                        <div className="rate-movie">
                             <p>Rate Movie</p>
                             <Rate movieId={movie.id} />
                         </div>
                     )}
-                    {/* {user && videos.length > 0 && (
-                        <div>
+                    {user && selectedVideo && (
+                        <div className="video-section">
                             <h3>VIDEO</h3>
-                            <div key={videos[2].id}>
-                                <p>{videos[2].name}</p>
+                            <div key={selectedVideo.id}>
+                                <p>{selectedVideo.name}</p>
                                 <iframe
                                     width="560"
                                     height="315"
-                                    src={`https://www.youtube.com/embed/${videos[2].key}`}
+                                    src={`https://www.youtube-nocookie.com/embed/${selectedVideo.key}?rel=0&modestbranding=1`}
                                     frameBorder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
-                                    title={videos[2].name}
-                                    sandbox="allow-scripts allow-same-origin allow-presentation"
+                                    title={selectedVideo.name}
+                                    loading="lazy"
+                                    referrerPolicy="strict-origin-when-cross-origin"
                                 ></iframe>
                             </div>
                         </div>
-                    )} */}
+                    )}
                 </Text>
             </Content>
         </Wrapper>
